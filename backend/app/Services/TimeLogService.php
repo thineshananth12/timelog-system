@@ -4,17 +4,20 @@ namespace App\Services;
 
 use App\Models\TimeLog;
 use App\Models\LeaveModel;
+use Illuminate\Support\Facades\Log;
+use Auth;
 class TimeLogService
 {
     public function storeTimeLogs( array $tasks, string $workDate) {
 
          // ─── Leave Validation ───────────────────
-
+        
         $leaveExists = LeaveModel::whereDate(
                 'start_date',
                 '<=',
                 $workDate
             )
+            ->where('user_id',Auth::user()->id)
             ->whereDate(
                 'end_date',
                 '>=',
@@ -38,7 +41,7 @@ class TimeLogService
             TimeLog::whereDate(
                 'work_date',
                 $workDate
-            )->sum('total_minutes');
+            )->where('user_id',Auth::user()->id)->sum('total_minutes');
 
         $newTotal = 0;
 
@@ -94,12 +97,12 @@ class TimeLogService
                     ':',
                     $task['time_input']
                 );
-
+            
             TimeLog::create([
 
                 'project_id' =>
                     $task['project_id'],
-
+                'user_id' => Auth::user()->id,
                 'work_date' =>
                     $workDate,
 

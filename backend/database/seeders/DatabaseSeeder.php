@@ -19,14 +19,23 @@ class DatabaseSeeder extends Seeder
 
         User::updateOrCreate(
             [
-                'email' => 'test@example.com'
+                'email' => 'testuser12@gmail.com',
             ],
 
             [
                 'name' => 'Test User',
-                'password' => bcrypt('password')
+                'password' => bcrypt('123456')
             ]
+        );
+        User::updateOrCreate(
+            [
+                'email' => 'thineshananth12@gmail.com',
+            ],
 
+            [
+                'name' => 'Thinesh Ananth',
+                'password' => bcrypt('123456')
+            ]
         );
         $this->call(ProjectSeeder::class);
     }

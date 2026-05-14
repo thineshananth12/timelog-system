@@ -12,7 +12,8 @@ class LeaveModel extends Model
         'start_date',
         'end_date',
         'reason',
-        'status'
+        'status',
+        'user_id'
     ];
      protected $appends = [
         'formatted_start_date',

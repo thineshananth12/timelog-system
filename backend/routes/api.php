@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/leaves', [LeaveController::class, 'index']);
     Route::post('/leaves', [LeaveController::class, 'store']);
     Route::delete('/leaves/{id}', [LeaveController::class, 'destroy']);
-    Route::get('/time-logs/{date}', [TimeLogController::class, 'timelog']);
+   // Route::get('/time-logs/{date}', [TimeLogController::class, 'timelog']);
     Route::get('/leave-history', [LeaveController::class, 'leavhistory']);
 });
 

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Log;
 class AuthenticatedSessionController extends Controller
 {
     public function store(Request $request)
@@ -17,7 +17,7 @@ class AuthenticatedSessionController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-
+       
         if (!$user || !Hash::check($request->password, $user->password)) {
 
             return response()->json([

@@ -8,6 +8,7 @@ class TimeLog extends Model
 {
     protected $fillable = [
         'project_id',
+        'user_id',
         'work_date',
         'task_description',
         'hours',

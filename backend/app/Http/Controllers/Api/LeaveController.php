@@ -8,6 +8,8 @@ use App\Models\TimeLog;
 use Illuminate\Http\Request;
 use Carbon\CarbonPeriod;
 use App\Services\LeaveService;
+use Illuminate\Support\Facades\Log;
+use Auth;
 class LeaveController extends Controller
 {
     protected $leaveService;
@@ -19,7 +21,7 @@ class LeaveController extends Controller
     }
     public function index()
     {
-        return LeaveModel::latest()->get();
+        return LeaveModel::latest()->where('user_id', Auth::user()->id)->get();
     }
     public function store(Request $request)
     {
@@ -29,7 +31,7 @@ class LeaveController extends Controller
             'reason' => 'nullable|max:500'
         ]);
         $leaveExists = LeaveModel::where(function ($query) use ($request) {
-        $query->whereBetween(
+        $query->where('user_id', Auth::user()->id)->whereBetween(
             'start_date',
             [
                 $request->start_date,
@@ -76,6 +78,7 @@ class LeaveController extends Controller
 
         foreach ($period as $date) {
             $workExists = TimeLog::whereDate('work_date', $date)
+                ->where('user_id', Auth::user()->id)
                 ->exists();
 
             if ($workExists) {
@@ -96,8 +99,9 @@ class LeaveController extends Controller
     }
     public function leavhistory(Request $request)
     {
-        $query = LeaveModel::query();
-
+        Log::error(Auth::user()->id);
+        $query = LeaveModel::query()->where('user_id', Auth::user()->id);
+        
         // ─── Filter Start Date ─────────────────────
 
         if ($request->start_date) {
@@ -120,7 +124,7 @@ class LeaveController extends Controller
             );
         }
 
-        $leaves = $query
+        $leaves = $query->where('user_id', Auth::user()->id)
             ->latest()
             ->get();
 

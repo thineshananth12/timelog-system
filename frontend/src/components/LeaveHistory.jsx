@@ -47,7 +47,7 @@ export default function LeaveHistory() {
       setLoading(true);
 
       const res = await api.get(
-        '/leaves',
+        '/leave-history',
         {
           params: {
             start_date: startDate,
@@ -88,7 +88,7 @@ export default function LeaveHistory() {
   const handleChangeRowsPerPage = (
     event
   ) => {
-
+    
     setRowsPerPage(
       parseInt(event.target.value, 10)
     );
@@ -171,10 +171,10 @@ console.log(leaves);
 
               </TableRow>
 
-            ) : leaves?.length > 0 ? (
+            ) : leaves?.leaves?.length > 0 ? (
 
               leaves
-                .slice(
+                ?.leaves?.slice(
                   page * rowsPerPage,
                   page * rowsPerPage +
                   rowsPerPage
@@ -233,7 +233,7 @@ console.log(leaves);
 
           component="div"
 
-          count={leaves?.length}
+          count={leaves?.leaves?.length}
 
           page={page}
 

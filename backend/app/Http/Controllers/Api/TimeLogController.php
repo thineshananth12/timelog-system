@@ -8,6 +8,7 @@ use App\Models\TimeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\TimeLogService;
+use Auth;
 class TimeLogController extends Controller
 {
     protected $timeLogService;
@@ -21,6 +22,7 @@ class TimeLogController extends Controller
     {
         return TimeLog::with('project')
             ->whereDate('work_date', $request->date)
+            ->where('user_id',Auth::user()->id)
             ->get();
     }
 
@@ -34,51 +36,7 @@ class TimeLogController extends Controller
             'tasks.*.time_input' => 'required'
         ]);
 
-        // $leaveExists = LeaveModel::whereDate('start_date', '<=', $request->work_date)
-        //     ->whereDate('end_date', '>=', $request->work_date)
-        //     ->exists();
-
-        // if ($leaveExists) {
-        //     return response()->json([
-        //         'message' => 'Leave already applied for this date'
-        //     ], 422);
-        // }
-
-        // $existingMinutes = TimeLog::whereDate('work_date', $request->work_date)
-        //     ->sum('total_minutes');
-
-        // $newTotal = 0;
-        
-        // foreach ($request->tasks as $task) {
-            
-        //     [$hours, $minutes] = explode(':', $task['time_input']);
-
-        //     $minutesTotal = ($hours * 60) + $minutes;
-
-        //     if ($minutesTotal > 600) {
-        //         return response()->json([
-        //             'message' => 'Single task cannot exceed 10 hours'
-        //         ], 422);
-        //     }
-
-        //     $newTotal += $minutesTotal;
-        // }
-        // if (($existingMinutes + $newTotal) > 600) {
-        //     return response()->json([
-        //         'message' => 'Daily limit exceeded'
-        //     ], 422);
-        // }
-        // foreach ($request->tasks as $task) {
-        //     [$hours, $minutes] = explode(':', $task['time_input']);
-        //     TimeLog::create([
-        //         'project_id' => $task['project_id'],
-        //         'work_date' => $request->work_date,
-        //         'task_description' => $task['task_description'],
-        //         'hours' => $hours,
-        //         'minutes' => $minutes,
-        //         'total_minutes' => ($hours * 60) + $minutes
-        //     ]);
-        // }
+       
          $response =
             $this->timeLogService
                 ->storeTimeLogs(
@@ -103,23 +61,24 @@ class TimeLogController extends Controller
         ]);
     }
 
-    public function timelog(Request $request){
-        $request->validate([
-            'date' => 'required|date'
-        ]);
+    // public function timelog(Request $request){
+    //     $request->validate([
+    //         'date' => 'required|date'
+    //     ]);
+    //     Log::error(Auth::user()->id);
+    //     $logs = TimeLog::with('project')
+    //     ->whereDate(
+    //         'work_date',
+    //         $request->date
+    //     )
+    //     //->where('user_id',Auth::user()->id)
+    //     ->latest()
+    //     ->get();
 
-        $logs = TimeLog::with('project')
-        ->whereDate(
-            'work_date',
-            $request->date
-        )
-        ->latest()
-        ->get();
-
-        return response()->json([
-            'logs' => $logs
-        ]);
-    }
+    //     return response()->json([
+    //         'logs' => $logs
+    //     ]);
+    // }
     public function destroy($id)
     {
         TimeLog::findOrFail($id)->delete();

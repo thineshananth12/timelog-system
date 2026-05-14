@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import api from '../api/client';
-
+import { useAuth } from '../context/AuthContext';
 export default function Login({ onLogin }) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const { login } = useAuth();
   async function submitLogin(e) {
 
     e.preventDefault();
@@ -16,11 +16,12 @@ export default function Login({ onLogin }) {
         email,
         password,
       });
-
-      localStorage.setItem('token', res.data.token);
-
-      onLogin();
-
+    //localStorage.setItem('token', res.data.token);
+    login(
+        res.data.user,
+        res.data.token
+    );
+    onLogin();
     } catch (error) {
 
       alert(error.response?.data?.message || 'Login failed');

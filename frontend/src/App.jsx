@@ -5,10 +5,12 @@ import TimeLogForm from './components/TimeLogForm';
 import LeaveForm from './components/LeaveForm';
 import TimeLogList from './components/TimeLogList';
 import LeaveHistory from './components/LeaveHistory';
+import { useAuth } from './context/AuthContext';
 import './styles.css';
 
 export default function App() {
-
+  const {  user, token } = useAuth();
+  console.log(user);
   const [loggedIn, setLoggedIn] = useState(
     !!localStorage.getItem('token')
   );
@@ -48,10 +50,10 @@ export default function App() {
           <div className="tl-header__brand">
 
             <span className="tl-header__logo">◈</span>
-
             <span className="tl-header__name">
-              WorkLog
+              Welcome {user?.name}
             </span>
+           
 
           </div>
 
