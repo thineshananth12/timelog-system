@@ -34,8 +34,8 @@ class LeaveController extends Controller
             'reason' => 'nullable|max:500'
         ]);
         // Check whether leave already applied or not
-        $leaveExists = LeaveModel::where(function ($query) use ($request) {
-        $query->where('user_id', Auth::user()->id)->whereBetween(
+        $leaveExists = LeaveModel::where('user_id', Auth::user()->id)->where(function ($query) use ($request) {
+        $query->whereBetween(
             'start_date',
             [
                 $request->start_date,
