@@ -107,6 +107,7 @@ console.log(logs?.length);
 
         <input
           type="date"
+          onClick={(e) => e.target.showPicker()}
           value={date}
           onChange={(e) =>
             setDate(e.target.value)

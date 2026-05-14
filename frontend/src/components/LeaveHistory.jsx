@@ -110,6 +110,7 @@ console.log(leaves);
         <input
           type="date"
           value={startDate}
+          onClick={(e) => e.target.showPicker()}
           onChange={(e) =>
             setStartDate(e.target.value)
           }
@@ -118,6 +119,7 @@ console.log(leaves);
         <input
           type="date"
           value={endDate}
+          onClick={(e) => e.target.showPicker()}
           onChange={(e) =>
             setEndDate(e.target.value)
           }
