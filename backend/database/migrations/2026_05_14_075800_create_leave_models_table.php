@@ -11,23 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('leaves', function (Blueprint $table) {
-            $table->id();
+        if (!Schema::hasTable('leaves')) {
+            Schema::create('leaves', function (Blueprint $table) {
+                $table->id();
 
-            $table->date('start_date');
+                $table->date('start_date');
 
-            $table->date('end_date');
+                $table->date('end_date');
 
-            $table->text('reason')->nullable();
+                $table->text('reason')->nullable();
 
-            $table->enum('status', [
-                'pending',
-                'approved',
-                'rejected'
-            ])->default('pending');
+                $table->enum('status', [
+                    'pending',
+                    'approved',
+                    'rejected'
+                ])->default('pending');
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     /**

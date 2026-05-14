@@ -15,25 +15,27 @@ return new class extends Migration
         //     $table->id();
         //     $table->timestamps();
         // });
-        Schema::create('time_logs', function (Blueprint $table) {
-            $table->id();
+        if (!Schema::hasTable('time_logs')) {
+            Schema::create('time_logs', function (Blueprint $table) {
+                $table->id();
 
-            $table->foreignId('project_id')
-                ->constrained()
-                ->cascadeOnDelete();
+                $table->foreignId('project_id')
+                    ->constrained()
+                    ->cascadeOnDelete();
 
-            $table->date('work_date');
+                $table->date('work_date');
 
-            $table->text('task_description');
+                $table->text('task_description');
 
-            $table->unsignedTinyInteger('hours');
+                $table->unsignedTinyInteger('hours');
 
-            $table->unsignedTinyInteger('minutes');
+                $table->unsignedTinyInteger('minutes');
 
-            $table->unsignedInteger('total_minutes');
+                $table->unsignedInteger('total_minutes');
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     /**
