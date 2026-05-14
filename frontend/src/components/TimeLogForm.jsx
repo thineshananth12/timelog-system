@@ -137,6 +137,7 @@ export default function TimeLogForm() {
             max={new Date().toISOString().split('T')[0]}
             value={workDate}
             onChange={(e) => setWorkDate(e.target.value)}
+            onClick={(e) => e.target.showPicker()}
             required
           />
         </div>

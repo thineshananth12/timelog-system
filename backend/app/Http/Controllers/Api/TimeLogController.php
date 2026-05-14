@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Services\TimeLogService;
 use Auth;
+use App\Constants\HttpStatus;
 class TimeLogController extends Controller
 {
     protected $timeLogService;
@@ -20,14 +21,19 @@ class TimeLogController extends Controller
     }
     public function index(Request $request)
     {
-        return TimeLog::with('project')
-            ->whereDate('work_date', $request->date)
-            ->where('user_id',Auth::user()->id)
-            ->get();
+        // Load all the Work log history for the logged user
+        return response()->json(
+            TimeLog::with('project')
+                ->whereDate('work_date', $request->date)
+                ->where('user_id', Auth::id())
+                ->get(),
+            HttpStatus::OK
+        );
     }
 
     public function store(Request $request)
     {
+        // Do the form validation 
         $request->validate([
             'work_date' => 'required|date|before_or_equal:today',
             'tasks' => 'required|array|min:1',
@@ -36,7 +42,7 @@ class TimeLogController extends Controller
             'tasks.*.time_input' => 'required'
         ]);
 
-       
+         //Apply the business logic to store the login data
          $response =
             $this->timeLogService
                 ->storeTimeLogs(
@@ -50,7 +56,7 @@ class TimeLogController extends Controller
             return response()->json([
                 'message' =>
                     $response['message']
-            ], 422);
+            ],  HttpStatus::VALIDATION_ERROR);
         }
 
         // ─── Success ──────────────────────────
@@ -58,29 +64,13 @@ class TimeLogController extends Controller
         return response()->json([
             'message' =>
                 $response['message']
-        ]);
+        ], HttpStatus::OK);
     }
 
-    // public function timelog(Request $request){
-    //     $request->validate([
-    //         'date' => 'required|date'
-    //     ]);
-    //     Log::error(Auth::user()->id);
-    //     $logs = TimeLog::with('project')
-    //     ->whereDate(
-    //         'work_date',
-    //         $request->date
-    //     )
-    //     //->where('user_id',Auth::user()->id)
-    //     ->latest()
-    //     ->get();
-
-    //     return response()->json([
-    //         'logs' => $logs
-    //     ]);
-    // }
+    
     public function destroy($id)
     {
+        // Delete the Timelog which is not used here
         TimeLog::findOrFail($id)->delete();
 
         return response()->json([

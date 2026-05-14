@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Carbon\CarbonPeriod;
 use App\Services\LeaveService;
 use Illuminate\Support\Facades\Log;
+use App\Constants\HttpStatus;
 use Auth;
 class LeaveController extends Controller
 {
@@ -21,15 +22,18 @@ class LeaveController extends Controller
     }
     public function index()
     {
+        // Fetch All Leave data for the logged In user
         return LeaveModel::latest()->where('user_id', Auth::user()->id)->get();
     }
     public function store(Request $request)
     {
+        //Leave Validation
         $request->validate([
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'nullable|max:500'
         ]);
+        // Check whether leave already applied or not
         $leaveExists = LeaveModel::where(function ($query) use ($request) {
         $query->where('user_id', Auth::user()->id)->whereBetween(
             'start_date',
@@ -69,7 +73,7 @@ class LeaveController extends Controller
         return response()->json([
             'message' =>
                 'Leave already applied for selected dates'
-        ], 422);
+        ], HttpStatus::VALIDATION_ERROR);
     }
         $period = CarbonPeriod::create(
             $request->start_date,
@@ -77,6 +81,7 @@ class LeaveController extends Controller
         );
 
         foreach ($period as $date) {
+            // Check whether worklog exist or not
             $workExists = TimeLog::whereDate('work_date', $date)
                 ->where('user_id', Auth::user()->id)
                 ->exists();
@@ -95,15 +100,14 @@ class LeaveController extends Controller
 
         return response()->json([
             'message' => 'Leave applied successfully'
-        ]);
+        ],HttpStatus::OK);
     }
     public function leavhistory(Request $request)
     {
+        // Get the Leave history
         Log::error(Auth::user()->id);
         $query = LeaveModel::query()->where('user_id', Auth::user()->id);
-        
         // ─── Filter Start Date ─────────────────────
-
         if ($request->start_date) {
 
             $query->whereDate(
@@ -112,32 +116,27 @@ class LeaveController extends Controller
                 $request->start_date
             );
         }
-
         // ─── Filter End Date ───────────────────────
-
         if ($request->end_date) {
-
             $query->whereDate(
                 'end_date',
                 '<=',
                 $request->end_date
             );
         }
-
         $leaves = $query->where('user_id', Auth::user()->id)
             ->latest()
             ->get();
-
         return response()->json([
             'leaves' => $leaves
         ]);
     }
     public function destroy($id)
     {
+        // Hard delete the leave history which is not used any place
         LeaveModel::findOrFail($id)->delete();
-
         return response()->json([
             'message' => 'Leave deleted successfully'
-        ]);
+        ],HttpStatus::OK);
     }
 }

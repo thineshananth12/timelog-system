@@ -129,6 +129,7 @@ export default function LeaveForm() {
           <input
             type="date"
             value={startDate}
+            onClick={(e) => e.target.showPicker()}
             onChange={(e) => {
 
               setStartDate(
@@ -163,6 +164,7 @@ export default function LeaveForm() {
           <input
             type="date"
             value={endDate}
+            onClick={(e) => e.target.showPicker()}
             onChange={(e) => {
 
               setEndDate(
