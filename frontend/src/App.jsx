@@ -6,7 +6,7 @@ import LeaveForm from './components/LeaveForm';
 import TimeLogList from './components/TimeLogList';
 import LeaveHistory from './components/LeaveHistory';
 import { useAuth } from './context/AuthContext';
-import './styles.css';
+import './styles/styles.css';
 
 export default function App() {
   const {  user, token } = useAuth();

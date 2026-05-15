@@ -66,7 +66,24 @@ class TimeLogController extends Controller
                 $response['message']
         ], HttpStatus::OK);
     }
+    public function update( Request $request, TimeLog $timeLog) {
+        $request->validate([
+            'work_date' => 'required|date|before_or_equal:today',
+            'task_description' => 'required|min:1',
+            'tasks.*.project_id' => 'required|exists:projects,id',
+            'tasks.*.task_description' => 'required|max:500',
+            'tasks.*.time_input' => 'required'
+        ]);
+        $response = $this->timeLogService->updateTimeLog(
+            $timeLog,
+            $request->all()
+        );
 
+        return response()->json(
+            $response,
+            $response['success'] ? 200 : 422
+        );
+    }
     
     public function destroy($id)
     {

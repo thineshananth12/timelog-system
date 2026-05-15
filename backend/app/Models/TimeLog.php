@@ -17,7 +17,8 @@ class TimeLog extends Model
     ];
 
     protected $appends = [
-        'formatted_work_date'
+        'formatted_work_date',
+        'formatted_time'
     ];
 
     public function project()
@@ -30,5 +31,13 @@ class TimeLog extends Model
         return \Carbon\Carbon::parse(
             $this->work_date
         )->format('d-m-Y');
+    }
+
+    public function getFormattedTimeAttribute()
+    {
+        return
+            str_pad($this->hours, 2, '0', STR_PAD_LEFT)
+            . ':' .
+            str_pad($this->minutes, 2, '0', STR_PAD_LEFT);
     }
 }
