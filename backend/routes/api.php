@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/projects', [ProjectController::class, 'index']);
-
     Route::get('/time-logs', [TimeLogController::class, 'index']);
     Route::post('/time-logs', [TimeLogController::class, 'store']);
     Route::delete('/time-logs/{id}', [TimeLogController::class, 'destroy']);
